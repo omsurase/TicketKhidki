@@ -8,19 +8,21 @@ function Login() {
   const onFinish = async (values) => {
     try {
       const response = await LoginUser(values);
-      console.log(response);
+      //console.log(response);
       if (response.succes) {
-        console.log("hi2");
+        //console.log("hi2");
         message.success(response.message);
         localStorage.setItem("token", response.data);
+        //console.log(localStorage.getItem('token'));
+
         navigate("/");
       } else {
-        console.log("hi");
+        //console.log("hi");
         message.error(response.message);
       }
     } catch (err) {
-      console.log(err)
-      console.log("hi3");
+      //console.log(err)
+      //console.log("hi3");
       message.error(err.message);
     }
   };

@@ -7,13 +7,14 @@ import "./stylesheets/sizes.css"
 import "./stylesheets/form-elements.css"
 import "./stylesheets/theme.css"
 import "./stylesheets/customs.css"
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <div >
       <BrowserRouter>
       <Routes>
-          <Route path="/" element={<Home />} /> 
+          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} /> 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register/>}/>
       </Routes>
