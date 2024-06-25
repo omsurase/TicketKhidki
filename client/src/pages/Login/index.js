@@ -5,6 +5,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LoginUser } from '../../apicalls/users';
 function Login() {
   const navigate = useNavigate();
+  const storeTokenAndNavigate = async (token) => {
+    localStorage.setItem("token", token);
+    // Ensure navigation happens after token storage
+    navigate("/");
+  };
   const onFinish = async (values) => {
     try {
       const response = await LoginUser(values);
@@ -12,7 +17,7 @@ function Login() {
       if (response.succes) {
         //console.log("hi2");
         message.success(response.message);
-        localStorage.setItem("token", response.data);
+        await storeTokenAndNavigate(response.data);
         //console.log(localStorage.getItem('token'));
 
         navigate("/");
