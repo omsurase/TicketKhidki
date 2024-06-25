@@ -1,10 +1,28 @@
 import React from 'react'
-import { Form } from "antd";
+import { Form,  message } from "antd";
 import Button from '../../components/Button';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { LoginUser } from '../../apicalls/users';
 function Login() {
-    const onFinish = ( values ) => {
-        console.log(values)
+  const navigate = useNavigate();
+    const onFinish = async ( values ) => {
+        try {
+          const response = await LoginUser(values);
+          console.log(response);
+          if (response.succes) {
+          console.log("hi2");
+          message.success(response.message);
+            localStorage.setItem("token", response.data);
+          navigate("/");
+        } else { 
+          console.log("hi");
+          message.error(response.message);
+        }
+        } catch (err) { 
+          console.log(err)
+          console.log("hi3");
+        message.error(err.message);
+      }
     };
   return (
     <div className='flex justify-center h-screen items-center bg-primary'>
@@ -17,13 +35,6 @@ function Login() {
                   layout='vertical'
                   className='mt-1'
                   onFinish={ onFinish }>
-                  <Form.Item
-                      label= "Name"
-                      name = "name"
-                      rules={[{ required: true, message: "Please enter your name" }]}
-                    >
-                      <input type="text" />
-                  </Form.Item>
                   <Form.Item
                       label= "Email"
                       name = "email"
