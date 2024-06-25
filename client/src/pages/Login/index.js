@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Form, message } from "antd";
 import Button from '../../components/Button';
 import { Link, useNavigate } from 'react-router-dom'
@@ -8,7 +8,7 @@ function Login() {
   const storeTokenAndNavigate = async (token) => {
     localStorage.setItem("token", token);
     // Ensure navigation happens after token storage
-    navigate("/");
+    window.location.href = "/";
   };
   const onFinish = async (values) => {
     try {
@@ -20,7 +20,7 @@ function Login() {
         await storeTokenAndNavigate(response.data);
         //console.log(localStorage.getItem('token'));
 
-        navigate("/");
+        //navigate("/");
       } else {
         //console.log("hi");
         message.error(response.message);
@@ -31,6 +31,12 @@ function Login() {
       message.error(err.message);
     }
   };
+
+  useEffect(() => { 
+    if (localStorage.getItem("token")) { 
+      navigate("/");
+    }
+  }, []);
   return (
     <div className='flex justify-center h-screen items-center bg-primary'>
       <div className='card p-3 w-400'>
