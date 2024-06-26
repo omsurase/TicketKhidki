@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { GetAllTheaters } from '../../apicalls/theaters';
+import { GetAllTheaters, UpdateTheater } from '../../apicalls/theaters';
 import { useDispatch } from 'react-redux';
 import { ShowLoading, HideLoading } from '../../redux/loaderSlice';
 import { Table, message } from 'antd';
+import { isAction } from 'redux';
 
 function TheaterList() {
   const dispatch = useDispatch();
@@ -27,6 +28,26 @@ function TheaterList() {
     getData();
   }, []);
 
+  const handleStatusChange = async (theater) => {
+    try {
+      dispatch(ShowLoading());
+      const response = await UpdateTheater({
+        theaterId: theater._id,
+        ...theater,
+        isActive: !theater.isActive,
+      });
+      if (response.success) {
+        message.success(response.message);
+        getData();
+      } else {
+        message.error(response.message);
+      }
+      dispatch(HideLoading());
+    } catch (error) {
+      dispatch(HideLoading());
+      message.error(error.message);
+    }
+  };
 
   const columns = [
     {
@@ -61,8 +82,27 @@ function TheaterList() {
       title: "Action",
       dataIndex: "action",
       render: (text, record) => {
-        <div className="flex gap-1"></div>
-      }
+        return (
+          <div className="flex gap-1">
+            {record.isActive && (
+              <span
+                className="underline"
+                onClick={() => handleStatusChange(record)}
+              >
+                Block
+              </span>
+            )}
+            {!record.isActive && (
+              <span
+                className="underline"
+                onClick={() => handleStatusChange(record)}
+              >
+                Approve
+              </span>
+            )}
+          </div>
+        );
+      },
     },
   ];
 

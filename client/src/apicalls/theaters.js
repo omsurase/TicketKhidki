@@ -25,7 +25,7 @@ export const GetAllTheaters = async () => {
 export const GetAllTheatersByOwner = async (payload) => {
     try {
         //console.log("hi2");
-        const response = await axiosInstance.post("/api/theaters/get-all-theater", payload);
+        const response = await axiosInstance.post("/api/theaters/get-all-theater-by-owner", payload);
         return response.data;
     } catch (err) {
         return err.response;
