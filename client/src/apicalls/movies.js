@@ -4,6 +4,7 @@ const { axiosInstance } = require(".");
 
 export const AddMovie = async (payload) => { 
     try {
+        //console.log("hi2");
         const response = await axiosInstance.post("/api/movies/add-movie", payload);
         return response.data;
     } catch (err) { 

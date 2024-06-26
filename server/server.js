@@ -9,6 +9,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use("/api/users",userRoutes);
-app.use("/api/movie",movieRoutes);
+app.use("/api/movies",movieRoutes);
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Node server  is running on port ${port}`))

@@ -18,6 +18,7 @@ function MoviesForm({
             dispatch(ShowLoading);
             let response = null;
             if (formType === "add") {
+                //console.log("hi");
                 response = await AddMovie(values);
             } else { 
 
@@ -38,7 +39,7 @@ function MoviesForm({
      };
     return (
         <Modal
-            title={formType == "add" ? "Add Movie" : "Edit Movie"}
+            title={formType === "add" ? "Add Movie" : "Edit Movie"}
             open={showMovieFormModal}
             onCancel={() => setShowMovieFormModal(false)}
             footer={null}
@@ -99,7 +100,7 @@ function MoviesForm({
                         </Form.Item>
                     </Col>
                 </Row>
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-1">
                     <Button title="Cancel" type="button" variant="outlined" onclick={() => setShowMovieFormModal(false)} />
                     <Button title="Save" type="submit"/>
                 </div>
