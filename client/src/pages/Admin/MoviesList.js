@@ -19,6 +19,15 @@ function MoviesList() {
             dataIndex: "title",
         },
         {
+            title: "Poster",
+            dataIndex: "poster",
+            render: (text, record) => {
+                return (
+                    <img src={record.poster} alt="poster" height='100' width='100'/>
+                )
+            }
+        },
+        {
             title: "Description",
             dataIndex: "description",
         },
