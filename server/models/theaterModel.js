@@ -21,6 +21,10 @@ const theaterSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:"User"
     },
+    isActive: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Theater", theaterSchema);

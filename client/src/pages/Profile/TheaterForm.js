@@ -1,8 +1,9 @@
 import React from 'react'
 import { Form, Modal, Row, Col, message } from 'antd';
 import Button from '../../components/Button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/loaderSlice';
+import { AddTheater } from '../../apicalls/theaters';
 
 function TheaterForm({
     showTheaterFormModal,
@@ -12,14 +13,18 @@ function TheaterForm({
     selectedTheater,
     setSelectedTheater
 }) {
+    const { user } = useSelector(state => state.users);
     const dispatch = useDispatch();
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
+        values.owner = user._id;
         try {
             dispatch(ShowLoading);
             let response = null;
-            if (formType === "add") { } else { }
+            if (formType === "add") { 
+                response = await AddTheater(values);
+            } else { }
             if (response.success) {
-                message.success(response.success);
+                message.success(response.message);
                 setShowTheaterFormModal(false);
                 setSelectedTheater(null);
             } else {
