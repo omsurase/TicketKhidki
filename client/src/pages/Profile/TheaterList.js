@@ -4,10 +4,10 @@ import TheaterForm from './TheaterForm';
 
 
 function TheaterList() {
-    const [showTheaterFormModal = false, setShowTheaterFormModal] = useState(false);
+    const [showTheaterFormModal, setShowTheaterFormModal] = useState(false);
     const [selectedTheater, setSelectedTheater] = useState(null);
-    const [formType = "add", setFormType] = useState("add");
-    const [theatres = [], setTheatres] = useState([]);
+    const [formType, setFormType] = useState("add");
+    const [theaters, setTheaters] = useState([]);
 
     return (
         <div>
@@ -20,13 +20,12 @@ function TheaterList() {
             </div>
 
             {showTheaterFormModal && <TheaterForm
-                showTheatreFormModal={showTheaterFormModal}
-                setShowTheatreFormModal={setShowTheaterFormModal}
+                showTheaterFormModal={showTheaterFormModal}
+                setShowTheaterFormModal={setShowTheaterFormModal}
                 formType={formType}
                 setFormType={setFormType}
-                selectedTheatre={selectedTheater}
-                setSelectedTheatre={setSelectedTheater}
-            //getData={getData} 
+                selectedTheater={selectedTheater}
+                setSelectedTheater={setSelectedTheater}
             />}
         </div>
     )
