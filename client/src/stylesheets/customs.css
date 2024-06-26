@@ -20,6 +20,10 @@
 .cursor-pointer {
     cursor: pointer;
 }
+
+.uppercase {
+    text-transform: uppercase;
+}
 /* loader */
 
 .loader-parent {
