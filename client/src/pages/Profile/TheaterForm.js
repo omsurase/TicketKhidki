@@ -3,7 +3,7 @@ import { Form, Modal, Row, Col, message } from 'antd';
 import Button from '../../components/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/loaderSlice';
-import { AddTheater } from '../../apicalls/theaters';
+import { AddTheater, UpdateTheater } from '../../apicalls/theaters';
 
 function TheaterForm({
     showTheaterFormModal,
@@ -11,7 +11,8 @@ function TheaterForm({
     formType,
     setFormType,
     selectedTheater,
-    setSelectedTheater
+    setSelectedTheater,
+    getData
 }) {
     const { user } = useSelector(state => state.users);
     const dispatch = useDispatch();
@@ -22,11 +23,17 @@ function TheaterForm({
             let response = null;
             if (formType === "add") { 
                 response = await AddTheater(values);
-            } else { }
+            } else { 
+                response = await UpdateTheater({
+                    ...values,
+                    theaterId: selectedTheater._id
+                });
+            }
             if (response.success) {
                 message.success(response.message);
                 setShowTheaterFormModal(false);
                 setSelectedTheater(null);
+                getData();
             } else {
                 message.error(response.message);
             }
@@ -51,6 +58,7 @@ function TheaterForm({
                 <Form
                     layout='vertical'
                     onFinish={onFinish}
+                    initialValues={selectedTheater}
                 >
                     <Form.Item
                         label="Name"

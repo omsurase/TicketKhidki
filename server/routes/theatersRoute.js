@@ -38,4 +38,37 @@ router.post("/get-all-theater", authMiddleware, async (req, res) => {
     };
 })
 
+//Get all theaters by Owner
+router.post("/get-all-theater-by-owner", authMiddleware, async (req, res) => {
+    try {
+        const theaters = await Theater.find({ owner: req.body.owner }).sort({createdAt: -1});
+        res.send({
+            success: true,
+            message: "Theaters fetched successfully",
+            data: theaters
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message,
+        });
+    };
+})
+
+//update theater
+router.post("/update-theater", authMiddleware, async (req, res) => {
+    try {
+        await Theater.findByIdAndUpdate(req.body.theaterId, req.body);
+        res.send({
+            success: true,
+            message: "Theater updated Successfully"
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message
+        });
+    }
+});
+
 module.exports = router
