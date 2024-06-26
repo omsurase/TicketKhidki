@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Button from '../../components/Button';
 import TheaterForm from './TheaterForm';
-import { GetAllTheatersByOwner } from '../../apicalls/theaters';
+import { DeleteTheater, GetAllTheatersByOwner } from '../../apicalls/theaters';
 import { useDispatch, useSelector } from 'react-redux';
 import { ShowLoading, HideLoading } from '../../redux/loaderSlice';
 import { Table, message } from 'antd';
@@ -16,7 +16,7 @@ function TheaterList() {
     const getData = async () => {
         try {
             dispatch(ShowLoading());
-            const response = await GetAllTheatersByOwner({owner: user._id});
+            const response = await GetAllTheatersByOwner({ owner: user._id });
             if (response.success) {
                 setTheaters(response.data);
             } else {
@@ -33,7 +33,22 @@ function TheaterList() {
         getData();
     }, []);
 
-    const handleDelete = () => { };
+    const handleDelete = async (id) => {
+        try {
+            dispatch(ShowLoading());
+            const response = await DeleteTheater({ theaterId: id });
+            if (response.success) {
+                message.success(response.message);
+                getData();
+            } else {
+                message.error(response.message);
+            }
+            dispatch(HideLoading());
+        } catch (err) {
+            dispatch(HideLoading());
+            message.error(err.message);
+        }
+    };
     const columns = [
         {
             title: "Name",
@@ -81,7 +96,7 @@ function TheaterList() {
                     }} />
             </div>
 
-            <Table columns={ columns}  dataSource={theaters}/>
+            <Table columns={columns} dataSource={theaters} />
 
             {showTheaterFormModal && <TheaterForm
                 showTheaterFormModal={showTheaterFormModal}
@@ -90,7 +105,7 @@ function TheaterList() {
                 setFormType={setFormType}
                 selectedTheater={selectedTheater}
                 setSelectedTheater={setSelectedTheater}
-                getData = {getData}
+                getData={getData}
             />}
         </div>
     )

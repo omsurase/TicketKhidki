@@ -71,4 +71,20 @@ router.post("/update-theater", authMiddleware, async (req, res) => {
     }
 });
 
+//delete theater
+router.post("/delete-theater", authMiddleware, async (req, res) => {
+    try {
+        await Theater.findByIdAndDelete(req.body.theaterId);
+        res.send({
+            success: true,
+            message: "Theater deleted Successfully"
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message
+        });
+    }
+});
+
 module.exports = router

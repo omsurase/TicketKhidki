@@ -23,11 +23,21 @@ export const GetAllTheatersByOwner = async (payload) => {
 };
 
 //update theater 
-//update movie 
 export const UpdateTheater = async (payload) => {
     try {
         //console.log("hi2");
         const response = await axiosInstance.post("/api/theaters/update-theater", payload);
+        return response.data;
+    } catch (err) {
+        return err.response;
+    }
+};
+
+//delete a theater
+export const DeleteTheater = async (payload) => {
+    try {
+        //console.log("hi2");
+        const response = await axiosInstance.post("/api/theaters/delete-theater", payload);
         return response.data;
     } catch (err) {
         return err.response;
