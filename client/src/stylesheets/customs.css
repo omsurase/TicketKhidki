@@ -24,6 +24,10 @@
 .uppercase {
     text-transform: uppercase;
 }
+
+i{
+    font-size: 20px;
+}
 /* loader */
 
 .loader-parent {

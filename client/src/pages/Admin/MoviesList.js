@@ -43,6 +43,17 @@ function MoviesList() {
         {
             title: "Action",
             dataIndex: "action",
+            render: (text, record) => {
+                return <div className="flex gap-1">
+                    <i className="ri-pencil-line"
+                        onClick={() => {
+                            setSelectedMovie(record);
+                            setFormType("edit");
+                            setShowMovieFormModal(true);
+                        }}></i>
+                    <i className="ri-delete-bin-2-line "></i>
+                </div>
+            }
         },
     ];
 
@@ -52,19 +63,19 @@ function MoviesList() {
             const response = await GetAllMovie();
             if (response.success) {
                 setMovies(response.data);
-            } else { 
+            } else {
                 message.error(response.message);
             }
             dispatch(HideLoading());
         } catch (err) {
             dispatch(HideLoading());
             message.error(err.message);
-          }
+        }
     };
 
-    useEffect(() => { 
+    useEffect(() => {
         getData();
-    },[]);
+    }, []);
 
     return (
         <div>
