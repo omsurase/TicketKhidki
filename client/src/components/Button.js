@@ -1,13 +1,13 @@
 import React from 'react'
 
-function Button({ title, onclick, variant, disabled, fullWidth , type}) {
-    let className = "bg-primary p-1 text-white";
+function Button({ title, onclick, variant, disabled, fullWidth, type }) {
+  let className = "bg-primary p-1 text-white";
 
-    if (fullWidth) {
+  if (fullWidth) {
     className += " w-full";
-    }
-    
-    if(variant === 'outlined'){
+  }
+
+  if (variant === 'outlined') {
     className = className.replace(
       "bg-primary",
       "border border-primary text-primary bg-white"
@@ -17,9 +17,9 @@ function Button({ title, onclick, variant, disabled, fullWidth , type}) {
 
   return (
     <div>
-          <button className={className} type={ type }>
-              {title}
-          </button>
+      <button className={className} disabled={disabled} type={type} onClick={onclick}>
+        {title}
+      </button>
     </div>
   )
 }
