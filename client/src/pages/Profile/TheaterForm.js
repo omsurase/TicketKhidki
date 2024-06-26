@@ -1,5 +1,8 @@
 import React from 'react'
-import { Form, Modal, Row, Col } from 'antd';
+import { Form, Modal, Row, Col, message } from 'antd';
+import Button from '../../components/Button';
+import { useDispatch } from 'react-redux';
+import { HideLoading, ShowLoading } from '../../redux/loaderSlice';
 
 function TheaterForm({
     showTheaterFormModal,
@@ -9,6 +12,25 @@ function TheaterForm({
     selectedTheater,
     setSelectedTheater
 }) {
+    const dispatch = useDispatch();
+    const onFinish = (values) => {
+        try {
+            dispatch(ShowLoading);
+            let response = null;
+            if (formType === "add") { } else { }
+            if (response.success) {
+                message.success(response.success);
+                setShowTheaterFormModal(false);
+                setSelectedTheater(null);
+            } else {
+                message.error(response.message);
+            }
+            dispatch(HideLoading);
+        } catch (err) {
+            dispatch(HideLoading);
+            message.error(err.message);
+        }
+    }
     return (
         <div>
             <Modal
@@ -22,7 +44,9 @@ function TheaterForm({
             >
 
                 <Form
-                    layout='vertical'>
+                    layout='vertical'
+                    onFinish={onFinish}
+                >
                     <Form.Item
                         label="Name"
                         name="name"
@@ -35,7 +59,7 @@ function TheaterForm({
                         name="address"
                         rules={[{ required: true, message: "Please input theater address!" }]}
                     >
-                        <textarea type="text" style={{ width: '100%', resize: 'none' }}/>
+                        <textarea type="text" style={{ width: '100%', resize: 'none' }} />
                     </Form.Item>
                     <Row gutter={16}>
                         <Col span={12}>
@@ -57,6 +81,16 @@ function TheaterForm({
                             </Form.Item>
                         </Col>
                     </Row>
+                    <div className="flex justify-end gap-1">
+                        <Button title="Cancel"
+                            type="button"
+                            variant="outlined"
+                            onclick={() => {
+                                setShowTheaterFormModal(false);
+                                setSelectedTheater(null);
+                            }} />
+                        <Button title="Save" type="submit" />
+                    </div>
                 </Form>
             </Modal>
         </div>

@@ -71,7 +71,7 @@ function MoviesForm({
                     </Col>
                     <Col span={24}>
                         <Form.Item label="Movie Description" name="description">
-                            <textarea type="text" />
+                            <textarea type="text" style={{ width: '100%', resize: 'none' }} />
                         </Form.Item>
                     </Col>
                     <Col span={8}>
