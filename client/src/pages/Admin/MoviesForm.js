@@ -27,6 +27,7 @@ function MoviesForm({
                 setShowMovieFormModal(false);
             }
             else { 
+                console.log(response.message);
                 message.error(response.message);
             }
             dispatch(HideLoading);
@@ -50,7 +51,7 @@ function MoviesForm({
             >
                 <Row gutter={16}>
                     <Col span={24}>
-                        <Form.Item label="Movie Name" name="name">
+                        <Form.Item label="Movie Name" name="title">
                             <input type="text" />
                         </Form.Item>
                     </Col>
@@ -78,7 +79,7 @@ function MoviesForm({
                     </Col>
                     <Col span={8}>
                         <Form.Item label="Movie Release date" name="releaseDate">
-                            <input type="text" />
+                            <input type="date" />
                         </Form.Item>
                     </Col>
                     <Col span={8}>
