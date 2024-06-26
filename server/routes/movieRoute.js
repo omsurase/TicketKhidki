@@ -19,4 +19,21 @@ router.post('/add-movie', authMiddleware, async (req, res) => {
     }
 });
 
+router.get('/get-all-movies', authMiddleware, async (req, res) => {
+    try {
+        //console.log("hi");
+        const movies = await Movie.find();
+
+        res.send({
+            success: true,
+            message: "Movie fetched successfully",
+            data: movies
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message,
+        });
+    }
+});
 module.exports = router;
