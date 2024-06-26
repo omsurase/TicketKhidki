@@ -3,8 +3,11 @@ import { Form, message } from "antd";
 import Button from '../../components/Button';
 import { Link, useNavigate } from 'react-router-dom'
 import { LoginUser } from '../../apicalls/users';
+import { useDispatch } from 'react-redux';
+import { HideLoading, ShowLoading } from '../../redux/loaderSlice';
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const storeTokenAndNavigate = async (token) => {
     localStorage.setItem("token", token);
     // Ensure navigation happens after token storage
@@ -12,7 +15,9 @@ function Login() {
   };
   const onFinish = async (values) => {
     try {
+      dispatch (ShowLoading())
       const response = await LoginUser(values);
+      dispatch(HideLoading());
       //console.log(response);
       if (response.succes) {
         //console.log("hi2");
@@ -28,6 +33,7 @@ function Login() {
     } catch (err) {
       //console.log(err)
       //console.log("hi3");
+      dispatch(HideLoading);
       message.error(err.message);
     }
   };
