@@ -11,7 +11,17 @@ export const AddTheater = async (payload) => {
     }
 };
 
-//get all theaters
+// get all theatres
+export const GetAllTheaters = async () => {
+  try {
+    const response = await axiosInstance.get("/api/theaters/get-all-theater");
+    return response.data;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+//get all theaters by owner
 export const GetAllTheatersByOwner = async (payload) => {
     try {
         //console.log("hi2");

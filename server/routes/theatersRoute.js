@@ -22,7 +22,7 @@ router.post("/add-theater", authMiddleware, async (req, res) => {
 })
 
 //Get all theaters
-router.post("/get-all-theater", authMiddleware, async (req, res) => {
+router.get("/get-all-theater", authMiddleware, async (req, res) => {
     try {
         const theaters = await Theater.find().sort({createdAt: -1});
         res.send({

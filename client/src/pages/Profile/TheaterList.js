@@ -67,6 +67,18 @@ function TheaterList() {
             dataIndex: "email"
         },
         {
+            title: "Status",
+            dataIndex: "isActive",
+            render: (text, record) => { 
+                if (text) {
+                    return "Approved"
+                }
+                else { 
+                    return "Pending/Blocked"
+                }
+            }
+        },
+        {
             title: "Action",
             dataIndex: "action",
             render: (text, record) => {
