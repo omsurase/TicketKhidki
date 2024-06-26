@@ -95,6 +95,7 @@ function MoviesList() {
                 selectedMovie={selectedMovie}
                 setSelectedMovie={setSelectedMovie}
                 formType={formType}
+                getData={getData}
             />}
         </div>
     );

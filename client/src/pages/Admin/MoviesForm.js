@@ -3,7 +3,7 @@ import { Col, Form, Modal, Row, message } from 'antd';
 import Button from '../../components/Button';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/loaderSlice'
-import { AddMovie } from '../../apicalls/movies';
+import { AddMovie, UpdateMovie } from '../../apicalls/movies';
 import moment from 'moment';
 
 function MoviesForm({
@@ -11,9 +11,10 @@ function MoviesForm({
     setShowMovieFormModal,
     selectedMovie,
     setSelectedMovie,
-    formType
+    formType,
+    getData
 }) {
-    if (selectedMovie) { 
+    if (selectedMovie) {
         selectedMovie.releaseDate = moment(selectedMovie.releaseDate).format("YYYY-MM-DD");
     }
     const dispatch = useDispatch();
@@ -25,9 +26,13 @@ function MoviesForm({
                 //console.log("hi");
                 response = await AddMovie(values);
             } else {
-
+                response = await UpdateMovie({
+                    ...values,
+                    movieId: selectedMovie._id
+                });
             }
             if (response.success) {
+                getData();
                 message.success(response.message);
                 setShowMovieFormModal(false);
             }
