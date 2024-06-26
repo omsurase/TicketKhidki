@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Table, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/loaderSlice';
-import { GetAllMovie } from '../../apicalls/movies';
+import { DeleteMovie, GetAllMovie } from '../../apicalls/movies';
 
 function MoviesList() {
     const dispatch = useDispatch();
@@ -15,17 +15,17 @@ function MoviesList() {
     const [formType, setFormType] = useState("add");
     const columns = [
         {
-            title: "Name",
-            dataIndex: "title",
-        },
-        {
             title: "Poster",
             dataIndex: "poster",
             render: (text, record) => {
                 return (
-                    <img src={record.poster} alt="poster" height='100' width='100'/>
+                    <img src={record.poster} alt="poster" height='60' width='80' className='br-1' />
                 )
             }
+        },
+        {
+            title: "Name",
+            dataIndex: "title",
         },
         {
             title: "Description",
@@ -60,7 +60,10 @@ function MoviesList() {
                             setFormType("edit");
                             setShowMovieFormModal(true);
                         }}></i>
-                    <i className="ri-delete-bin-2-line "></i>
+                    <i
+                        className="ri-delete-bin-2-line "
+                        onClick={() => { handleDelete(record._id); }}
+                    ></i>
                 </div>
             }
         },
@@ -72,6 +75,25 @@ function MoviesList() {
             const response = await GetAllMovie();
             if (response.success) {
                 setMovies(response.data);
+            } else {
+                message.error(response.message);
+            }
+            dispatch(HideLoading());
+        } catch (err) {
+            dispatch(HideLoading());
+            message.error(err.message);
+        }
+    };
+
+    const handleDelete = async (movieId) => {
+        try {
+            dispatch(ShowLoading());
+            const response = await DeleteMovie({
+                movieId,
+            });
+            if (response.success) {
+                message.success(response.message);
+                getData();
             } else {
                 message.error(response.message);
             }

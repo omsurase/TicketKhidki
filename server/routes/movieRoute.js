@@ -23,7 +23,7 @@ router.post('/add-movie', authMiddleware, async (req, res) => {
 router.get('/get-all-movies', authMiddleware, async (req, res) => {
     try {
         //console.log("hi");
-        const movies = await Movie.find();
+        const movies = await Movie.find().sort({ createdAt: -1 });
 
         res.send({
             success: true,
@@ -54,4 +54,20 @@ router.post("/update-movie", authMiddleware, async (req, res) => {
     }
 });
 
+
+// delete a movie
+router.post('/delete-movie', authMiddleware, async (req, res) => {
+    try {
+        await Movie.findByIdAndDelete(req.body.movieId);
+        res.send({
+            success: true,
+            message: "Movie deleted Successfully"
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message
+        });
+    }
+});
 module.exports = router;
