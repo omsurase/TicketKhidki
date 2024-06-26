@@ -11,6 +11,15 @@
     min-height: 85vh;
     border: 1px solid #b1b1b1;
 }
+
+.underline {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
 /* loader */
 
 .loader-parent {
