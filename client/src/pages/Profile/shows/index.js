@@ -3,26 +3,43 @@ import React, { useEffect, useState } from 'react'
 import Button from '../../../components/Button';
 import { useDispatch } from 'react-redux';
 import { GetAllMovie } from '../../../apicalls/movies';
+import { AddShow, GetAllShowsByTheater } from '../../../apicalls/theaters';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
-
+import moment from "moment";
 
 function Shows({ openShowsModal, setOpenShowsModal, theater }) {
     const [view, setView] = useState("table");
     const [shows, setShows] = useState([]);
     const [movies, setMovies] = useState([]);
     const dispatch = useDispatch();
-    const getMovies = async () => {
+
+
+    const getData = async () => {
         try {
             dispatch(ShowLoading());
-            const response = await GetAllMovie();
-            if (response.success) {
+            const movieResponse = await GetAllMovie();
+            if (movieResponse.success) {
                 //console.log(response.data)
-                setMovies(response.data);
+                setMovies(movieResponse.data);
                 //console.log(movies);
             }
             else {
-                message.error(response.message);
+                message.error(movieResponse.message);
             }
+
+            const showResponse = await GetAllShowsByTheater({
+                theaterId: theater._id
+            });
+            if (showResponse.success) {
+                //console.log(response.data)
+                setShows(showResponse.data);
+                //console.log(movies);
+            }
+            else {
+                message.error(showResponse.message);
+            }
+
+
             dispatch(HideLoading());
         } catch (err) {
             dispatch(HideLoading());
@@ -30,9 +47,31 @@ function Shows({ openShowsModal, setOpenShowsModal, theater }) {
         }
     }
 
+    const handleAddShow = async (values) => {
+        try {
+            dispatch(ShowLoading());
+            const response = await AddShow({
+                ...values,
+                theater: theater._id
+            });
+            if (response.success) {
+                message.success(response.message);
+                getData();
+                setView("table");
+            }
+            else {
+                message.error(response.message);
+            }
+            dispatch(HideLoading());
+        } catch (err) {
+            message.error(err.message);
+            dispatch(HideLoading());
+        }
+    }
+
     useEffect(() => {
         //console.log(movies);
-        getMovies();
+        getData();
         //console.log(movies);
     }, []);
 
@@ -43,7 +82,10 @@ function Shows({ openShowsModal, setOpenShowsModal, theater }) {
         },
         {
             title: "Date",
-            dataIndex: "date"
+            dataIndex: "date",
+            render: (text, record) => {
+                return moment(text).format("MMM DD YYYY");
+            }
         },
         {
             title: "Time",
@@ -51,7 +93,10 @@ function Shows({ openShowsModal, setOpenShowsModal, theater }) {
         },
         {
             title: "Movie",
-            dataIndex: "movie"
+            dataIndex: "movie",
+            render: (text, record) => {
+                return record.movie.title;
+            }
         },
         {
             title: "Ticket Price",
@@ -59,11 +104,14 @@ function Shows({ openShowsModal, setOpenShowsModal, theater }) {
         },
         {
             title: "Total Seats",
-            dataIndex: "totaleSeats"
+            dataIndex: "totalSeats"
         },
         {
             title: "Availaible Seats",
-            dataIndex: "available seats"
+            dataIndex: "available seats",
+            render: (text, record) => { 
+                return record.totalSeats - record.filledSeats.length;
+            }
         },
         {
             title: "Action",
@@ -103,7 +151,10 @@ function Shows({ openShowsModal, setOpenShowsModal, theater }) {
 
             {view === "table" && (<Table columns={columns} dataSource={shows} />)}
 
-            {view === "form" && (<Form>
+            {view === "form" && (<Form
+                layout='vertical'
+                onFinish={handleAddShow}
+            >
                 <Row
                     gutter={[16, 16]}
                 >
@@ -114,7 +165,9 @@ function Shows({ openShowsModal, setOpenShowsModal, theater }) {
                     </Col>
                     <Col span={8}>
                         <Form.Item label="Date" name="date" rules={[{ required: true, message: "Please input show date!" }]}>
-                            <input type="date" />
+                            <input type="date"
+                                min={new Date().toISOString().split("T")[0]}
+                            />
                         </Form.Item>
                     </Col>
                     <Col span={8}>

@@ -13,12 +13,12 @@ export const AddTheater = async (payload) => {
 
 // get all theatres
 export const GetAllTheaters = async () => {
-  try {
-    const response = await axiosInstance.get("/api/theaters/get-all-theater");
-    return response.data;
-  } catch (error) {
-    return error.response;
-  }
+    try {
+        const response = await axiosInstance.get("/api/theaters/get-all-theater");
+        return response.data;
+    } catch (error) {
+        return error.response;
+    }
 };
 
 //get all theaters by owner
@@ -48,6 +48,28 @@ export const DeleteTheater = async (payload) => {
     try {
         //console.log("hi2");
         const response = await axiosInstance.post("/api/theaters/delete-theater", payload);
+        return response.data;
+    } catch (err) {
+        return err.response;
+    }
+};
+
+//add a show
+export const AddShow = async (payload) => {
+    try {
+        //console.log("hi2");
+        const response = await axiosInstance.post("/api/theaters/add-show", payload);
+        return response.data;
+    } catch (err) {
+        return err.response;
+    }
+}
+
+//get all shows by theater
+export const GetAllShowsByTheater = async (payload) => {
+    try {
+        //console.log("hi2");
+        const response = await axiosInstance.post("/api/theaters/get-all-shows-by-theater", payload);
         return response.data;
     } catch (err) {
         return err.response;

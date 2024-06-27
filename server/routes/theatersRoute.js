@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Theater = require('../models/theaterModel');
 const authMiddleware = require('../middleware/authMiddleware');
 const { response } = require("express");
-
+const Show = require("../models/showModel");
 
 //Add a theater
 router.post("/add-theater", authMiddleware, async (req, res) => {
@@ -24,7 +24,7 @@ router.post("/add-theater", authMiddleware, async (req, res) => {
 //Get all theaters
 router.get("/get-all-theater", authMiddleware, async (req, res) => {
     try {
-        const theaters = await Theater.find().sort({createdAt: -1});
+        const theaters = await Theater.find().sort({ createdAt: -1 });
         res.send({
             success: true,
             message: "Theaters fetched successfully",
@@ -41,7 +41,7 @@ router.get("/get-all-theater", authMiddleware, async (req, res) => {
 //Get all theaters by Owner
 router.post("/get-all-theater-by-owner", authMiddleware, async (req, res) => {
     try {
-        const theaters = await Theater.find({ owner: req.body.owner }).sort({createdAt: -1});
+        const theaters = await Theater.find({ owner: req.body.owner }).sort({ createdAt: -1 });
         res.send({
             success: true,
             message: "Theaters fetched successfully",
@@ -86,5 +86,40 @@ router.post("/delete-theater", authMiddleware, async (req, res) => {
         });
     }
 });
+
+
+//add Show
+router.post("/add-show", authMiddleware, async (req, res) => {
+    try {
+        const newShow = new Show(req.body);
+        await newShow.save();
+        res.send({
+            success: true,
+            message: "Show added successfully",
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message,
+        });
+    };
+});
+
+//get all shows by theater
+router.post("/get-all-shows-by-theater", authMiddleware, async (req, res) => {
+    try {
+        const shows = await Show.find({ theater: req.body.theaterId }).populate('movie').sort({ createdAt: -1 });
+        res.send({
+            success: true,
+            message: "Shows fetched successfully",
+            data: shows
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message,
+        });
+    };
+})
 
 module.exports = router
