@@ -55,6 +55,42 @@ router.post("/get-all-theater-by-owner", authMiddleware, async (req, res) => {
     };
 })
 
+//Get all uniques theaters which have shows of a movie
+router.post("/get-all-theaters-by-movie", authMiddleware, async (req, res) => {
+    try {
+        const { movie, date } = req.body;
+        // this will include duplicate theaters too where multiple shows of same movie are present at different times
+        const shows = await Show.find({ movie, date }).populate('theater').sort({ createdAt: -1 });
+
+        //get all unique theaters
+        let uniqueTheaters = [];
+
+        shows.forEach((show) => {
+            const theater = uniqueTheaters.find((theater) => theater._id == show.theater._id);
+
+            if (!theater) {
+                const showsForThisTheater = shows.filter((showObj) => showObj.theater._id == show.theater._id);
+                uniqueTheaters.push({
+                    ...show.theater._doc,
+                    shows: showsForThisTheater
+                });
+            }
+
+        });
+
+        res.send({
+            success: true,
+            message: "Shows fetched successfully",
+            data: uniqueTheaters,
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message,
+        });
+    };
+});
+
 //update theater
 router.post("/update-theater", authMiddleware, async (req, res) => {
     try {

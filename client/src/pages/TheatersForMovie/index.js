@@ -5,6 +5,7 @@ import { HideLoading, ShowLoading } from '../../redux/loaderSlice';
 import { GetAllMovie, GetMovieById } from '../../apicalls/movies';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
+import { GetAllTheatersByMovie } from '../../apicalls/theaters';
 
 function TheatersForMovie() {
 
@@ -14,6 +15,7 @@ function TheatersForMovie() {
     )
     const params = useParams();
     const [movie, setMovie] = useState([]);
+    const [theaters, setTheaters] = useState([]);
     const navigate = useNavigate(params.id);
     const getData = async () => {
         try {
@@ -30,11 +32,31 @@ function TheatersForMovie() {
             message.error(err.message);
         }
     };
-
+    const getTheaters = async () => { 
+        try { 
+            dispatch(ShowLoading());
+            const response = await GetAllTheatersByMovie({ date, movie: params.id });
+            if (response.success) {
+                setTheaters(response.data);
+            } else { 
+                message.error(response.message);
+            }
+            dispatch(HideLoading());
+        } catch (err) {
+            dispatch(HideLoading());
+            message.error(err.message);
+         }
+    }
     const dispatch = useDispatch();
     useEffect(() => {
         getData();
     }, []);
+
+    useEffect(() => {
+        getTheaters();
+    }, [date]);
+
+
     return (
         <div>
             {movie && <div>
