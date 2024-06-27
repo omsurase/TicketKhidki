@@ -70,4 +70,23 @@ router.post('/delete-movie', authMiddleware, async (req, res) => {
         });
     }
 });
+
+//get movie by id
+
+router.post("/get-movie-by-id/:id", authMiddleware, async (req, res) => {
+    try {
+        const movie = await Movie.findById(req.params.id);
+        res.send({
+            success: true,
+            message: "Movie fetched successfully.",
+            data: movie
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: "Movie fetched unsuccessfully.",
+        });
+      };
+});
+
 module.exports = router;
