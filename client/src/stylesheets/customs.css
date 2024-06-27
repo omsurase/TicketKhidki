@@ -36,6 +36,12 @@ thead th {
   border-bottom: 1px solid #b1b1b1 !important;
   text-transform: uppercase;
 }
+
+.search-input{
+  height: 60px;
+  border-radius: 5px;
+}
+
 /* loader */
 
 .loader-parent {
