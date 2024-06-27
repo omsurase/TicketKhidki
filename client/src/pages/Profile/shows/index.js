@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Button from '../../../components/Button';
 import { useDispatch } from 'react-redux';
 import { GetAllMovie } from '../../../apicalls/movies';
-import { AddShow, GetAllShowsByTheater } from '../../../apicalls/theaters';
+import { AddShow, GetAllShowsByTheater, DeleteShow  } from '../../../apicalls/theaters';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import moment from "moment";
 
@@ -69,6 +69,26 @@ function Shows({ openShowsModal, setOpenShowsModal, theater }) {
         }
     }
 
+    const handleDelete = async (id) => {
+        try {
+            dispatch(ShowLoading());
+            const response = await DeleteShow({
+                showId: id
+            });
+            if (response.success) {
+                message.success(response.message);
+                getData();
+            }
+            else {
+                message.error(response.message);
+            }
+            dispatch(HideLoading());
+        } catch (err) {
+            message.error(err.message);
+            dispatch(HideLoading());
+        }
+    }
+
     useEffect(() => {
         //console.log(movies);
         getData();
@@ -109,13 +129,22 @@ function Shows({ openShowsModal, setOpenShowsModal, theater }) {
         {
             title: "Availaible Seats",
             dataIndex: "available seats",
-            render: (text, record) => { 
+            render: (text, record) => {
                 return record.totalSeats - record.filledSeats.length;
             }
         },
         {
             title: "Action",
-            dataIndex: "action"
+            dataIndex: "action",
+            render: (text, record) => {
+                return <div className="flex gap-1 items-center">
+                    { record.filledSeats.length ===0 &&
+                        <i
+                        className="ri-delete-bin-2-line "
+                        onClick={() => { handleDelete(record._id); }}
+                    ></i>}
+                </div>
+            }
         },
     ];
     return (

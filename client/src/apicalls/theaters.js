@@ -75,3 +75,14 @@ export const GetAllShowsByTheater = async (payload) => {
         return err.response;
     }
 };
+
+//delete a show
+export const DeleteShow = async (payload) => {
+    try {
+        //console.log("hi2");
+        const response = await axiosInstance.post("/api/theaters/delete-show", payload);
+        return response.data;
+    } catch (err) {
+        return err.response;
+    }
+};
