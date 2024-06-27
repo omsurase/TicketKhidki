@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import Admin from "./pages/Admin";
 import Profile from "./pages/Profile";
 import TheatersForMovie from "./pages/TheatersForMovie";
+import BookShow from "./pages/BookShow";
 
 function App() {
   const { loading } = useSelector((state) => state.loaders);
@@ -23,7 +24,8 @@ function App() {
       <BrowserRouter>
       <Routes>
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="/movie/:id" element={<ProtectedRoute><TheatersForMovie/></ProtectedRoute>} />
+          <Route path="/movie/:id" element={<ProtectedRoute><TheatersForMovie /></ProtectedRoute>} />
+          <Route path="/book-show/:id" element={<ProtectedRoute><BookShow/></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />

@@ -42,6 +42,11 @@ thead th {
   border-radius: 5px;
 }
 
+.divider{
+    border-bottom: 1px solid #e1e1e1;
+    margin: 10px 0;
+}
+
 /* loader */
 
 .loader-parent {
