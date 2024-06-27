@@ -5,6 +5,7 @@ import { DeleteTheater, GetAllTheatersByOwner } from '../../apicalls/theaters';
 import { useDispatch, useSelector } from 'react-redux';
 import { ShowLoading, HideLoading } from '../../redux/loaderSlice';
 import { Table, message } from 'antd';
+import Shows from './shows';
 
 function TheaterList() {
     const dispatch = useDispatch();
@@ -12,6 +13,7 @@ function TheaterList() {
     const [selectedTheater, setSelectedTheater] = useState(null);
     const [formType, setFormType] = useState("add");
     const [theaters, setTheaters] = useState([]);
+    const [openShowsModal, setOpenShowsModal] = useState(false);
     const { user } = useSelector(state => state.users);
     const getData = async () => {
         try {
@@ -69,11 +71,11 @@ function TheaterList() {
         {
             title: "Status",
             dataIndex: "isActive",
-            render: (text, record) => { 
+            render: (text, record) => {
                 if (text) {
                     return "Approved"
                 }
-                else { 
+                else {
                     return "Pending/Blocked"
                 }
             }
@@ -82,7 +84,7 @@ function TheaterList() {
             title: "Action",
             dataIndex: "action",
             render: (text, record) => {
-                return <div className="flex gap-1">
+                return <div className="flex gap-1 items-center">
                     <i className="ri-pencil-line"
                         onClick={() => {
                             setSelectedTheater(record);
@@ -93,6 +95,16 @@ function TheaterList() {
                         className="ri-delete-bin-2-line "
                         onClick={() => { handleDelete(record._id); }}
                     ></i>
+
+                    {record.isActive && <span
+                        className='underline'
+                        onClick={() => {
+                            setOpenShowsModal(true);
+                            setSelectedTheater(record);
+                        }}
+                    >
+                        Shows
+                    </span>}
                 </div>
             }
         },
@@ -119,6 +131,14 @@ function TheaterList() {
                 setSelectedTheater={setSelectedTheater}
                 getData={getData}
             />}
+
+            {openShowsModal && (
+                <Shows
+                    openShowsModal={openShowsModal}
+                    setOpenShowsModal={setOpenShowsModal}
+                    theater={selectedTheater}
+                />
+            )}
         </div>
     )
 }
