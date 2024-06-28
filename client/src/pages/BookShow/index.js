@@ -7,15 +7,13 @@ import { GetShowById } from '../../apicalls/theaters';
 import moment from 'moment';
 import Button from '../../components/Button'
 import StripeCheckout from 'react-stripe-checkout';
+import { MakePayment } from '../../apicalls/bookings';
 
 function BookShow() {
   const [show, setShow] = useState();
   const params = useParams();
   const dispatch = useDispatch();
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const onToken = (token) => { 
-    console.log(token);
-  };
   const getData = async () => {
     try {
       dispatch(ShowLoading());
@@ -71,6 +69,25 @@ function BookShow() {
       })}
     </div>
   };
+
+  const onToken = async (token) => { 
+    try {
+      dispatch(ShowLoading());
+      
+      const response = await MakePayment(token , selectedSeats.length*show.ticketPrice*100);
+      if (response.success) {
+        message.success(response.message);
+      }
+      else { 
+        message.error(response.message);
+      }
+      dispatch(HideLoading());
+    } catch (err) { 
+      message.error(err.message);
+      dispatch(HideLoading());
+    }
+  };
+
 
   useEffect(() => { getData() }, []);
   return (
