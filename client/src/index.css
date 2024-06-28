@@ -9,5 +9,8 @@ body {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+h1,span {
     color: rgb(69, 69, 69)
 }
