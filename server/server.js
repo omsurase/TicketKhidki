@@ -7,6 +7,7 @@ const movieRoutes = require("./routes/movieRoute");
 const theaterRoutes = require("./routes/theatersRoute");
 const app = express();
 const bookingsRoute = require("./routes/bookingsRoute");
+const redisClient = require("./config/redisConfig"); 
 
 app.use(express.json());
 app.use(cors());

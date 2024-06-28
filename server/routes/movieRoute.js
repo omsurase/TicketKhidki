@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const Movie = require('../models/movieModel');
 const authMiddleware = require('../middleware/authMiddleware');
+const redisClient = require('../config/redisConfig');
+
 
 //add new movie
 router.post('/add-movie', authMiddleware, async (req, res) => {
@@ -20,18 +22,52 @@ router.post('/add-movie', authMiddleware, async (req, res) => {
 });
 
 //fetch movies
+// router.get('/get-all-movies', authMiddleware, async (req, res) => {
+//     try {
+//         //console.log("hi");
+//         const movies = await Movie.find().sort({ createdAt: -1 });
+
+//         res.send({
+//             success: true,
+//             message: "Movie fetched successfully",
+//             data: movies
+//         });
+//     } catch (err) {
+//         res.send({
+//             success: false,
+//             message: err.message,
+//         });
+//     }
+// });
+
 router.get('/get-all-movies', authMiddleware, async (req, res) => {
     try {
-        //console.log("hi");
-        const movies = await Movie.find().sort({ createdAt: -1 });
+        const cacheKey = 'movies';
 
-        res.send({
-            success: true,
-            message: "Movie fetched successfully",
-            data: movies
-        });
+        // Check Redis cache
+        const cachedMovies = await redisClient.get(cacheKey);
+        if (cachedMovies) {
+            // If movies are found in cache
+            return res.send({
+                success: true,
+                message: "Movies fetched successfully from cache",
+                data: JSON.parse(cachedMovies)
+            });
+        } else {
+            // If movies are not found in cache, query MongoDB
+            const movies = await Movie.find().sort({ createdAt: -1 });
+
+            // Store the result in Redis cache
+            await redisClient.setEx(cacheKey, 3600, JSON.stringify(movies)); // 3600 seconds = 1 hour
+
+            return res.send({
+                success: true,
+                message: "Movies fetched successfully from database",
+                data: movies
+            });
+        }
     } catch (err) {
-        res.send({
+        return res.send({
             success: false,
             message: err.message,
         });
