@@ -8,6 +8,7 @@ import moment from 'moment';
 
 function Home() {
 
+  const [searchText, setSearchText] = useState("");
   const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
   const getData = async () => {
@@ -35,13 +36,17 @@ function Home() {
       <input type='text'
         className='search-input'
         placeholder='Search for movies'
+        value={searchText}
+        onChange={ (e) => setSearchText(e.target.value)}
       />
 
       <Row
         gutter={[20]}
         className='mt-1'
       >
-        {movies.map((movie) => (
+        {movies
+          .filter((movie)=> movie.title.toLowerCase().includes(searchText.toLowerCase()))
+          .map((movie) => (
           <Col span={6}>
             <div className="card flex flex-col gap-1 cursor-pointer"
               onClick={() => navigate(`/movie/${movie._id}?date=${moment().format("YYYY-MM-DD")}`)}

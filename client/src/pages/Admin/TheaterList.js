@@ -67,6 +67,11 @@ function TheaterList() {
       dataIndex: "email"
     },
     {
+      title: "Owner",
+      dataIndex: "owner",
+      render: (text , record) => { return record.owner.name }
+    },
+    {
       title: "Status",
       dataIndex: "isActive",
       render: (text, record) => {

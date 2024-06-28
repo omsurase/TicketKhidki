@@ -128,7 +128,7 @@ function BookShow() {
 
       <div className="flex justify-between card p-2 items-center">
         <div>
-          <h1 className="text-xl">
+          <h1 className="text-sm">
             {show.theater.name}
           </h1>
           <h1 className="text-sm">
@@ -141,7 +141,7 @@ function BookShow() {
           </h1>
         </div>
         <div>
-          <h1 className="text-xl">
+          <h1 className="text-sm">
             {moment(show.date).format("MMM DD YYYY")} - {" "}
             {moment(show.time, "HH:mm").format("hh:mm A")}
           </h1>
@@ -150,15 +150,29 @@ function BookShow() {
         {/* seats */}
       </div>
       <div className="flex justify-center mt-2">{getSeats()}</div>
-      {selectedSeats.length > 0 && <div className="mt-2 flex justify-center">
-        <StripeCheckout
-          token={onToken}
-          stripeKey="pk_test_51PWZ4I2N7AteUhiPrKAwcuAnJUURPc7K7yu0NzmoQaunRsvKCWEBESQcq4kRS0wBUk2JdB0kKiqh7BjEgBvSPugd00whVkzBSL"
-          amount={selectedSeats.length * 100 * show.ticketPrice}
-        >
-          <Button title='BOOK NOW' />
-        </StripeCheckout>
-      </div>}
+
+      {selectedSeats.length > 0 && (
+          <div className="mt-2 flex justify-center gap-2 items-center flex-col">
+            <div className="flex justify-center">
+              <div className="flex uppercase card p-2 gap-3">
+                <h1 className="text-sm"><b>Selected Seats</b> : {selectedSeats.join(" , ")}</h1>
+
+                <h1 className="text-sm">
+                  <b>Total Price</b> : {selectedSeats.length * show.ticketPrice}
+                </h1>
+              </div>
+            </div>
+            <StripeCheckout
+              token={onToken}
+              amount={selectedSeats.length * show.ticketPrice * 100}
+              billingAddress
+              stripeKey="pk_test_51IYnC0SIR2AbPxU0TMStZwFUoaDZle9yXVygpVIzg36LdpO8aSG8B9j2C0AikiQw2YyCI8n4faFYQI5uG3Nk5EGQ00lCfjXYvZ"
+            >
+              <Button title="Book Now" />
+            </StripeCheckout>
+          </div>
+      )}
+      
     </div>
   )
 }

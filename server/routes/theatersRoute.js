@@ -24,7 +24,7 @@ router.post("/add-theater", authMiddleware, async (req, res) => {
 //Get all theaters
 router.get("/get-all-theater", authMiddleware, async (req, res) => {
     try {
-        const theaters = await Theater.find().sort({ createdAt: -1 });
+        const theaters = await Theater.find().populate('owner').sort({ createdAt: -1 });
         res.send({
             success: true,
             message: "Theaters fetched successfully",
