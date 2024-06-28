@@ -65,4 +65,34 @@ router.post("/book-show", authMiddleware, async (req, res) => {
   }
 });
 
+// get all bookings by user id
+router.get("/get-bookings", authMiddleware, async (req, res) => {
+  try {
+    const bookings = await Booking.find({ user: req.body.userId }).populate("show").populate({
+      path: "show",
+      populate: {
+        path: "movie",
+        model: "Movie",
+      }
+    }).populate("user").populate({
+      path: "show",
+      populate: {
+        path: "theater",
+        model:"Theater",
+      }
+    });
+    res.send({
+      success: true,
+      message: "Bookings fetched successfully",
+      data: bookings
+    });
+  } catch (err) { 
+    res.send({
+      success: false,
+      message: err.message
+    });
+   }
+});
+
+
 module.exports = router;

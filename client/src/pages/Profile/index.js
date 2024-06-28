@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import pageTitle from '../../components/PageTitle';
 import TheaterList from './TheaterList';
+import Bookings from './Bookings';
 
 
 function Profile() {
@@ -11,7 +12,7 @@ function Profile() {
       <pageTitle title=" Profile " />
       <Tabs defaultActiveKey='1'>
         <Tabs.TabPane tab="Bookings" key="1">
-          Bookings
+          <Bookings/>
         </Tabs.TabPane>
         <Tabs.TabPane tab="Theatres" key="2">
           <TheaterList/>

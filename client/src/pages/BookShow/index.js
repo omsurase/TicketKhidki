@@ -95,12 +95,12 @@ function BookShow() {
   const book = async (transactionId) => {
     try {
       dispatch(ShowLoading());
-      console.log({
-        show: params.id,
-        seats: selectedSeats,
-        transactionId,
-        user: user._id
-      });
+      // console.log({
+      //   show: params.id,
+      //   seats: selectedSeats,
+      //   transactionId,
+      //   user: user._id
+      // });
       const response = await BookShowTickets({
         show: params.id,
         seats: selectedSeats,
