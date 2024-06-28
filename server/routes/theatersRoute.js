@@ -174,4 +174,23 @@ router.post("/delete-show", authMiddleware, async (req, res) => {
     }
 });
 
+//get show by id
+
+router.post("/get-shows-by-id", authMiddleware, async (req, res) => {
+    try {
+        const show = await Show.findById(req.body.showId).populate("movie").populate("theater");
+        res.send({
+            success: true,
+            message: "Show fetched successsfully",
+            data: show,
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            message: err.message,
+        });
+     }
+});
+
+
 module.exports = router
