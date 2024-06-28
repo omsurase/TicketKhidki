@@ -23,6 +23,8 @@ function ProtectedRoute({ children }) {
         console.log("user is null");
         dispatch(SetUser(null));
         message.error(response.message);
+        localStorage.removeItem('token');
+        navigate('/login');
       }
     } catch (err) {
       dispatch(HideLoading());

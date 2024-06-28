@@ -5,11 +5,17 @@ import { ShowLoading, HideLoading } from '../../redux/loaderSlice';
 import { message } from 'antd';
 import { GetShowById } from '../../apicalls/theaters';
 import moment from 'moment';
+import Button from '../../components/Button'
+import StripeCheckout from 'react-stripe-checkout';
+
 function BookShow() {
   const [show, setShow] = useState();
   const params = useParams();
   const dispatch = useDispatch();
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const onToken = (token) => { 
+    console.log(token);
+  };
   const getData = async () => {
     try {
       dispatch(ShowLoading());
@@ -95,7 +101,15 @@ function BookShow() {
         {/* seats */}
       </div>
       <div className="flex justify-center mt-2">{getSeats()}</div>
-
+      {selectedSeats.length>0 && <div className="mt-2 flex justify-center">
+        <StripeCheckout
+          token={onToken}
+          stripeKey="pk_test_51PWZ4I2N7AteUhiPrKAwcuAnJUURPc7K7yu0NzmoQaunRsvKCWEBESQcq4kRS0wBUk2JdB0kKiqh7BjEgBvSPugd00whVkzBSL"
+          amount={ selectedSeats.length*100*show.ticketPrice}
+        >
+          <Button title = 'BOOK NOW'/>
+        </StripeCheckout>
+      </div>}
     </div>
   )
 }
