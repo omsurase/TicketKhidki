@@ -74,9 +74,10 @@ function BookShow() {
     try {
       dispatch(ShowLoading());
       
-      const response = await MakePayment(token , selectedSeats.length*show.ticketPrice*100);
-      if (response.success) {
-        message.success(response.message);
+      const response = await MakePayment(token , selectedSeats.length * show.ticketPrice * 100);
+      if (response.data.success) {
+        console.log(response.data.message);
+        message.success(response.data.message);
       }
       else { 
         message.error(response.message);

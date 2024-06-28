@@ -21,7 +21,7 @@ router.post('/add-movie', authMiddleware, async (req, res) => {
     }
 });
 
-//fetch movies
+
 // router.get('/get-all-movies', authMiddleware, async (req, res) => {
 //     try {
 //         //console.log("hi");
@@ -40,6 +40,7 @@ router.post('/add-movie', authMiddleware, async (req, res) => {
 //     }
 // });
 
+//fetch movies
 router.get('/get-all-movies', authMiddleware, async (req, res) => {
     try {
         const cacheKey = 'movies';
