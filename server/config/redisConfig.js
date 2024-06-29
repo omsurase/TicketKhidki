@@ -13,7 +13,7 @@ client.on('error', (err) => {
 });
 
 client.on('connect', () => {
-    console.log(client);
+    //console.log(client);
     console.log('Connected to Redis');
 });
 

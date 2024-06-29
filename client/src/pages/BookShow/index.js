@@ -7,15 +7,18 @@ import { GetShowById } from '../../apicalls/theaters';
 import moment from 'moment';
 import Button from '../../components/Button'
 import StripeCheckout from 'react-stripe-checkout';
-import { BookShowTickets, MakePayment } from '../../apicalls/bookings';
+import { BookShowTickets, GetPublicKey, MakePayment, MakePaymentIntent, ConfirmPaymentIntent } from '../../apicalls/bookings';
 
 function BookShow() {
   const navigate = useNavigate();
   const { user } = useSelector(state => state.users);
   const [show, setShow] = useState();
+  const [publicKey, setPublicKey] = useState("");
   const params = useParams();
   const dispatch = useDispatch();
   const [selectedSeats, setSelectedSeats] = useState([]);
+
+
   const getData = async () => {
     try {
       dispatch(ShowLoading());
@@ -73,55 +76,91 @@ function BookShow() {
   };
 
   const onToken = async (token) => {
+    dispatch(ShowLoading());
     try {
-      dispatch(ShowLoading());
+      // Create a payment intent
+      const paymentIntentResponse = await MakePaymentIntent(token, selectedSeats.length * show.ticketPrice * 100);
+      if (paymentIntentResponse.success) {
+        const paymentIntent = paymentIntentResponse.data;
 
-      const response = await MakePayment(token, selectedSeats.length * show.ticketPrice * 100);
-      if (response.success) {
-        console.log(response.message);
-        message.success(response.message);
-        await book(response.data);
+        // Book the selected seats
+        const bookingResponse = await BookShowTickets({
+          show: params.id,
+          seats: selectedSeats,
+          transactionId: paymentIntent.id,
+          user: user._id
+        });
+
+        if (bookingResponse.success) {
+          // Confirm the payment intent
+          const confirmPaymentResponse = await ConfirmPaymentIntent(paymentIntent.id);
+          if (confirmPaymentResponse.success) {
+            // Booking and payment confirmation successful
+            message.success('Booking and payment successful');
+            navigate("/profile");
+          } else {
+            message.error(confirmPaymentResponse.message);
+          }
+        } else {
+          message.error(bookingResponse.message);
+        }
+      } else {
+        message.error(paymentIntentResponse.message);
       }
-      else {
-        message.error(response.message);
-      }
-      dispatch(HideLoading());
     } catch (err) {
       message.error(err.message);
+    } finally {
       dispatch(HideLoading());
     }
   };
 
-  const book = async (transactionId) => {
+
+  // const book = async (transactionId) => {
+  //   try {
+  //     // console.log({
+  //     //   show: params.id,
+  //     //   seats: selectedSeats,
+  //     //   transactionId,
+  //     //   user: user._id
+  //     // });
+  //     const response = await BookShowTickets({
+  //       show: params.id,
+  //       seats: selectedSeats,
+  //       transactionId,
+  //       user: user._id
+  //     });
+  //     console.log(response);
+  //     if (response.success) {
+  //       message.success(response.message);
+  //     } else {
+  //       message.error(response.message);
+  //     }
+  //   } catch (err) {
+  //     message.error(err.message);
+  //   }
+  // }
+
+  const getPublicKey = async () => {
     try {
       dispatch(ShowLoading());
-      // console.log({
-      //   show: params.id,
-      //   seats: selectedSeats,
-      //   transactionId,
-      //   user: user._id
-      // });
-      const response = await BookShowTickets({
-        show: params.id,
-        seats: selectedSeats,
-        transactionId,
-        user: user._id
-      });
-
+      const response = await GetPublicKey();
       if (response.success) {
-        message.success(response.message);
-        navigate("/profile");
+        //console.log(response.data);
+        setPublicKey(response.data);
       } else {
         message.error(response.message);
       }
       dispatch(HideLoading());
     } catch (err) {
-      message.error(err.message);
       dispatch(HideLoading());
+      message.error(err.message);
     }
   }
 
-  useEffect(() => { getData() }, []);
+  useEffect(() => {
+    getData()
+    getPublicKey()
+  }, []);
   return (
     show && <div>
       {/* Show Information */}
@@ -152,27 +191,27 @@ function BookShow() {
       <div className="flex justify-center mt-2">{getSeats()}</div>
 
       {selectedSeats.length > 0 && (
-          <div className="mt-2 flex justify-center gap-2 items-center flex-col">
-            <div className="flex justify-center">
-              <div className="flex uppercase card p-2 gap-3">
-                <h1 className="text-sm"><b>Selected Seats</b> : {selectedSeats.join(" , ")}</h1>
+        <div className="mt-2 flex justify-center gap-2 items-center flex-col">
+          <div className="flex justify-center">
+            <div className="flex uppercase card p-2 gap-3">
+              <h1 className="text-sm"><b>Selected Seats</b> : {selectedSeats.join(" , ")}</h1>
 
-                <h1 className="text-sm">
-                  <b>Total Price</b> : {selectedSeats.length * show.ticketPrice}
-                </h1>
-              </div>
+              <h1 className="text-sm">
+                <b>Total Price</b> : {selectedSeats.length * show.ticketPrice}
+              </h1>
             </div>
-            <StripeCheckout
-              token={onToken}
-              amount={selectedSeats.length * show.ticketPrice * 100}
-              billingAddress
-              stripeKey="pk_test_51IYnC0SIR2AbPxU0TMStZwFUoaDZle9yXVygpVIzg36LdpO8aSG8B9j2C0AikiQw2YyCI8n4faFYQI5uG3Nk5EGQ00lCfjXYvZ"
-            >
-              <Button title="Book Now" />
-            </StripeCheckout>
           </div>
+          <StripeCheckout
+            token={onToken}
+            amount={selectedSeats.length * show.ticketPrice * 100}
+            billingAddress
+            stripeKey={publicKey}
+          >
+            <Button title="Book Now" />
+          </StripeCheckout>
+        </div>
       )}
-      
+
     </div>
   )
 }
