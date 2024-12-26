@@ -1,22 +1,29 @@
-const { createClient } = require('redis');
+const { createClient } = require("redis");
 
 const client = createClient({
-    password: 'x1xhhQcgV9Vs56GJeB1Ix3TEdaGPnwMN',
-    socket: {
-        host: 'redis-14264.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-        port: 14264
-    }
+  username: "default",
+  password: "xunTch7Pv2RTzg8UHCTiitHWaqjI0LGW",
+  socket: {
+    host: "redis-15211.c15.us-east-1-2.ec2.redns.redis-cloud.com",
+    port: 15211,
+  },
 });
 
-client.on('error', (err) => {
-    console.log('Redis error: ', err);
+client.on("error", (err) => {
+  console.log("Redis Client Error: ", err);
 });
 
-client.on('connect', () => {
-    //console.log(client);
-    console.log('Connected to Redis');
+client.on("connect", () => {
+  console.log("Connected to Redis");
 });
 
-client.connect();
+// Use async IIFE to handle the async connection
+(async () => {
+  try {
+    await client.connect();
+  } catch (err) {
+    console.error("Failed to connect to Redis:", err);
+  }
+})();
 
 module.exports = client;
